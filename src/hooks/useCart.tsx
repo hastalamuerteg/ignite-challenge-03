@@ -1,7 +1,7 @@
-import { createContext, ReactNode, useContext, useState } from 'react';
-import { toast } from 'react-toastify';
-import { api } from '../services/api';
-import { Product, Stock } from '../types';
+import { createContext, ReactNode, useContext, useState } from "react";
+import { toast } from "react-toastify";
+import { api } from "../services/api";
+import { Product, Stock } from "../types";
 
 interface CartProviderProps {
   children: ReactNode;
@@ -23,11 +23,11 @@ const CartContext = createContext<CartContextData>({} as CartContextData);
 
 export function CartProvider({ children }: CartProviderProps): JSX.Element {
   const [cart, setCart] = useState<Product[]>(() => {
-    // const storagedCart = Buscar dados do localStorage
+    const storagedCart = localStorage.getItem("RocketShoes:cart");
 
-    // if (storagedCart) {
-    //   return JSON.parse(storagedCart);
-    // }
+    if (storagedCart) {
+      return JSON.parse(storagedCart);
+    }
 
     return [];
   });
@@ -35,6 +35,8 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
   const addProduct = async (productId: number) => {
     try {
       // TODO
+      console.log(productId);
+      console.log(cart);
     } catch {
       // TODO
     }
