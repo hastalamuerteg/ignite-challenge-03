@@ -25,12 +25,12 @@ const Home = (): JSX.Element => {
   const [products, setProducts] = useState<ProductFormatted[]>([]);
   const { addProduct, cart } = useCart();
 
-  const cartItemsAmount = cart.reduce((sumAmount, product) => {
-    // TODO
-    console.log(sumAmount);
-    console.log(product);
-    return {};
-  }, {} as CartItemsAmount);
+  // const cartItemsAmount = cart.reduce((sumAmount, product) => {
+  //   // TODO
+
+  // }, {} as CartItemsAmount);
+
+  console.log(cart);
 
   useEffect(() => {
     async function loadProducts() {
@@ -48,9 +48,9 @@ const Home = (): JSX.Element => {
 
   function handleAddProduct(id: number) {
     // TODO
-    const chosenProduct = products.find((prod) => prod.id === id);
-    localStorage.setItem("RocketShoes:cart", JSON.stringify([chosenProduct]));
-    addProduct(id);
+    if (id) {
+      addProduct(id);
+    }
   }
 
   return (
