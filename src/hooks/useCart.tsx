@@ -24,6 +24,7 @@ const CartContext = createContext<CartContextData>({} as CartContextData);
 export function CartProvider({ children }: CartProviderProps): JSX.Element {
   const [cart, setCart] = useState<Product[]>(() => {
     const storagedCart = localStorage.getItem("RocketShoes:cart");
+    console.log(storagedCart);
 
     if (storagedCart) {
       return JSON.parse(storagedCart);
@@ -35,19 +36,25 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
   const addProduct = async (productId: number) => {
     try {
       // TODO
-      const { data: addedProduct } = await api.get(`/products/${productId}`);
-      const { data: addedProductStockAmount } = await api.get(
+      const { data: addedProduct }: { data: Product } = await api.get(
+        `/products/${productId}`
+      );
+      const { data: addedProductStockAmount }: { data: Stock } = await api.get(
         `/stock/${productId}`
       );
-      const cartHasAddedProduct = cart.includes(addedProduct);
+
+      const cartHasAddedProduct = cart.find((item) => item.id === productId);
+      const stockHasAddedProduct =
+        addedProduct.amount > addedProductStockAmount.amount ? false : true;
+
       if (cartHasAddedProduct) {
+        toast.error("Product already in cart");
+      } else if (!cartHasAddedProduct && stockHasAddedProduct) {
+        setCart([...cart, { ...addedProduct, amount: 1 }]);
+        localStorage.setItem("@RocketShoes:cart", JSON.stringify(cart));
+      } else if (!cartHasAddedProduct && !stockHasAddedProduct) {
+        toast.error("This product is out of stock");
       }
-      console.log(cartHasAddedProduct);
-
-      console.log(addedProduct);
-      console.log(addedProductStockAmount);
-
-      // setCart([...cart, addedProduct]);
     } catch (err) {
       // TODO
       console.log(err);
