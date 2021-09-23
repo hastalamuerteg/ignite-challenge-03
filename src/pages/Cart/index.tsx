@@ -26,27 +26,38 @@ const Cart = (): JSX.Element => {
     priceFormatted: formatPrice(product.price),
     subTotal: formatPrice(product.price * product.amount),
   }));
-  console.log(cartFormatted);
 
   const total = formatPrice(
     cart.reduce((sumTotal, product) => {
-      return sumTotal + product.price;
+      return sumTotal + product.price * product.amount;
     }, 0)
   );
 
   function handleProductIncrement(product: Product) {
     //TODO
     if (product) {
-      updateProductAmount({ productId: product.id, amount: product.amount });
+      updateProductAmount({
+        productId: product.id,
+        amount: product.amount + 1,
+      });
     }
   }
 
   function handleProductDecrement(product: Product) {
     // TODO
+    if (product) {
+      updateProductAmount({
+        productId: product.id,
+        amount: product.amount - 1,
+      });
+    }
   }
 
   function handleRemoveProduct(productId: number) {
     // TODO
+    if (productId) {
+      removeProduct(productId);
+    }
   }
 
   return (
@@ -78,7 +89,7 @@ const Cart = (): JSX.Element => {
                       type="button"
                       data-testid="decrement-product"
                       disabled={item.amount <= 1}
-                      // onClick={() => handleProductDecrement()}
+                      onClick={() => handleProductDecrement(item)}
                     >
                       <MdRemoveCircleOutline size={20} />
                     </button>
@@ -104,7 +115,7 @@ const Cart = (): JSX.Element => {
                   <button
                     type="button"
                     data-testid="remove-product"
-                    // onClick={() => handleRemoveProduct(product.id)}
+                    onClick={() => handleRemoveProduct(item.id)}
                   >
                     <MdDelete size={20} />
                   </button>
